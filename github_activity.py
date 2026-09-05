@@ -22,9 +22,16 @@ def fetch_activity(username):
         return None
 
 # main menu
-        
-
-    
+def main():
+    if len(sys.argv) < 2:
+        print("Usage: python github_activity.py <username>")
+        return
+    username = sys.argv[1]
+    events = fetch_activity(username)
+    if events:
+        print(f"Success! Found {len(events)} activities.")
+        print("--- A Peek at the First Event's Raw Data ---")
+        print(json.dumps(events[0], indent=4))
 
 if __name__ == "__main__":
     main()
