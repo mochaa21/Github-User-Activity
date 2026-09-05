@@ -9,8 +9,8 @@ def fetch_activity(username):
     url = f"https://api.github.com/users/{username}/events"
     try:
         with urllib.request.urlopen(url) as response:
-            data = response.read.decode('utf-8')
-            return json.load(data)
+            data = response.read().decode('utf-8')
+            return json.loads(data)
     except urllib.error.HTTPError as e:
         if e == 404:
             print(f"Error: GitHub user '{username}' not found.")
