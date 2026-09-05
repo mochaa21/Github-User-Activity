@@ -21,6 +21,34 @@ def fetch_activity(username):
         print("Error: No internet connection.")
         return None
 
+def display_activity(events):
+    if not events:
+        print("No recent activity found.")
+        return
+    for event in events:
+        action = event['type']
+        repo_name = event['repo']['name']
+        if action == 'PushEvent':
+            commits = event['payload'].get('commits', [])
+            commit_count = len(commits)
+
+            if commit_count == 0 and 'size' in event['payload']:
+                commit_count = event['payload']['size']
+            if commit_count > 0:
+                print(f"- Pushed {commit_count} commits to {repo_name}")
+            else:
+                print(f"- Pushed to {repo_name}")
+        elif action == 'IssuesEvent':
+            issue_action = event['payload'][action]
+            print(f"- {issue_action.capitalize()} an issue in {repo_name}")
+        elif action == 'WatchEvent':
+            print(f"- Starred {repo_name}")
+        elif action == 'CreateEvent':
+            print(f"- Created a new repository or branch in {repo_name}")
+        else:
+            print(f"- {action} at {repo_name}")
+
+
 # main menu
 def main():
     if len(sys.argv) < 2:
@@ -31,7 +59,7 @@ def main():
     if events:
         print(f"Success! Found {len(events)} activities.")
         print("--- A Peek at the First Event's Raw Data ---")
-        print(json.dumps(events[0], indent=4))
+        display_activity(events)
 
 if __name__ == "__main__":
     main()
